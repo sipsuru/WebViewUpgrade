@@ -647,10 +647,16 @@ public class SandboxedProcessServiceDelegate {
     private static final class SandboxedApplicationContext extends ContextWrapper {
 
         private final Context mWebViewContext;
+        private final Context mRealHostApplicationContext;
 
         SandboxedApplicationContext(Context hostAppContext, Context webViewContext) {
             super(hostAppContext);
             mWebViewContext = webViewContext;
+            Context realAppContext = hostAppContext.getApplicationContext();
+            if (realAppContext == null) {
+                realAppContext = hostAppContext;
+            }
+            mRealHostApplicationContext = realAppContext;
         }
 
         @Override
@@ -665,7 +671,7 @@ public class SandboxedProcessServiceDelegate {
 
         @Override
         public Context getApplicationContext() {
-            return this;
+            return mRealHostApplicationContext;
         }
     }
 }
